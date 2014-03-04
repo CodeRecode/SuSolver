@@ -1,0 +1,21 @@
+﻿<Window x:Class="SudokuSolver.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sudoku Solver" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" >
+
+    <Grid Background="#bbb">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Background="#999">
+                <TextBlock Foreground="White" FontWeight="Bold" FontSize="25" Margin="5">Sudoku Solver</TextBlock>
+            </StackPanel>
+            <Border Padding="3" Background="Black">
+                <Grid Name="SudokuGrid" HorizontalAlignment="Left" Width="450" Height="450" Background="White">
+                </Grid>
+            </Border>
+            <StackPanel HorizontalAlignment="Right" Width="100">
+                <Button Height="40" Margin="5" Click="SolveClick">Solve!</Button>
+                <Button Height="40" Margin="5" Click="LoadFromFileClick">Load from file</Button>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
