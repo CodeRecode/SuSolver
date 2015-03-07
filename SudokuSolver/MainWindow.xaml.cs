@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Win32;
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
-using System.IO;
 
 namespace SudokuSolver
 {
@@ -22,6 +14,7 @@ namespace SudokuSolver
     public partial class MainWindow : Window
     {
         TextBox[,] gridFields;
+        Stopwatch watch = new Stopwatch();
 
         public MainWindow()
         {
@@ -92,7 +85,31 @@ namespace SudokuSolver
                         grid[i, j] = 0;
                 }
             }
-            Solver sol = new Solver(grid);
+
+            watch.Reset();
+            watch.Start();
+
+            bool solved = Solver.Solve(ref grid);
+
+            watch.Stop();
+
+            if(solved)
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        gridFields[i, j].Text = grid[i, j].ToString();
+                    }
+                }
+                StatusText.Text = "Solution was found in " + watch.ElapsedMilliseconds / 1000.0 + " seconds";
+                StatusText.Foreground = Brushes.Black;
+            }
+            else
+            {
+                StatusText.Text = "No solution was found.";
+                StatusText.Foreground = Brushes.Red;
+            }
         }
 
         /// <summary>
@@ -100,6 +117,8 @@ namespace SudokuSolver
         /// </summary>
         private void LoadFromFileClick(object sender, RoutedEventArgs e)
         {
+            StatusText.Text = "";
+
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.DefaultExt = ".txt";
             dialog.Filter = "Text Files (*.txt)|*.txt";
@@ -133,6 +152,62 @@ namespace SudokuSolver
                             textBox.IsReadOnly = false;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Launch the save file dialog and write out the current grid
+        /// </summary>
+        private void SaveToFileClick(object sender, RoutedEventArgs e)
+        {
+            StatusText.Text = "";
+
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".txt";
+            dialog.Filter = "Text Files (*.txt)|*.txt";
+            dialog.InitialDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
+
+            bool result = dialog.ShowDialog() ?? false;
+
+            if (result == true)
+            {
+                string[] outputLines = new string[9];
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (gridFields[i, j].Text != string.Empty && gridFields[i, j].Text[0] > '0' && gridFields[i, j].Text[0] <= '9')
+                        {
+                            outputLines[i] += gridFields[i, j].Text;
+                        }
+                        else
+                        {
+                            outputLines[i] += "0";
+                        }
+                    }
+                }
+                File.WriteAllLines(dialog.FileName, outputLines);
+            }
+        }
+
+        /// <summary>
+        /// Reset the grid to the default state
+        /// </summary>
+        private void ResetGridClick(object sender, RoutedEventArgs e)
+        {
+            StatusText.Text = "";
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    TextBox textBox = gridFields[i, j];
+                    textBox.Text = "";
+                    textBox.FontStyle = FontStyles.Italic;
+                    textBox.FontWeight = FontWeights.Normal;
+                    textBox.Foreground = Brushes.CornflowerBlue;
+                    textBox.IsReadOnly = false;
                 }
             }
         }

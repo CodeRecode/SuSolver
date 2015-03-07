@@ -6,15 +6,20 @@
     <Grid Background="#bbb">
         <DockPanel>
             <StackPanel DockPanel.Dock="Top" Background="#999">
-                <TextBlock Foreground="White" FontWeight="Bold" FontSize="25" Margin="5">Sudoku Solver</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Foreground="White" FontWeight="Bold" FontSize="25" Margin="5">Sudoku Solver</TextBlock>
+                    <TextBlock Name="StatusText" Foreground="Black" FontWeight="Bold" FontSize="15" Margin="50, 0, 0, 0" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <Border Padding="3" Background="Black">
                 <Grid Name="SudokuGrid" HorizontalAlignment="Left" Width="450" Height="450" Background="White">
                 </Grid>
             </Border>
             <StackPanel HorizontalAlignment="Right" Width="100">
-                <Button Height="40" Margin="5" Click="SolveClick">Solve!</Button>
+                <Button Height="40" Margin="5" Click="ResetGridClick">Reset Grid</Button>
                 <Button Height="40" Margin="5" Click="LoadFromFileClick">Load from file</Button>
+                <Button Height="40" Margin="5" Click="SaveToFileClick">Save to file</Button>
+                <Button Height="40" Margin="5" Click="SolveClick">Solve!</Button>
             </StackPanel>
         </DockPanel>
     </Grid>
